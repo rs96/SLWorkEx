@@ -6,7 +6,7 @@ const Board = () => {
   const [squares, setSquares] = useState(Array(9).fill(null))
   const [isXNext, setIsXNext] = useState(true);
   const [history, setHistory] = useState([{squares: Array(9).fill(null)} ])
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState('Next Playyer: O')
 
   function calculateWinner(squares) {
     const lines = [
@@ -16,7 +16,7 @@ const Board = () => {
       [0, 3, 6],
       [1, 4, 7],
       [2, 5, 8],
-      [0, 4, 8],
+      [0, 4, 7],
       [2, 4, 6],
     ];
     for (let i = 0; i < lines.length; i++) {
@@ -30,10 +30,23 @@ const Board = () => {
 
 
   const handleClick = (i) => {
-    console.log(i);
     if(calculateWinner(squares) || squares[i]){
       return
     }
+    squares[i] = isXNext ? 'X' : 'O'
+    setSquares(squares);
+    setIsXNext(!isXNext);
+    history.concat([{squares: squares}])
+    setHistory(history)
+    const winner = calculateWinner(squares);
+    if (winner) {
+      setStatus('Winner: ' + winner);
+    } else {
+      setStatus('Next player: ' + (isXNext ? 'X' : 'O'));
+    }
+  }
+
+  const handleClickBug = (i) => {
     squares[i] = isXNext ? 'X' : 'O'
     setSquares(squares);
     setIsXNext(!isXNext);
@@ -60,7 +73,7 @@ const Board = () => {
     ))}
 
     {[6, 7, 8].map(i => (
-      <Tile key={i} onClick={() => handleClick(i)} value={squares[i]}/>
+      <Tile key={i} onClick={() => handleClickBug(i)} value={squares[i]}/>
     ))}
   </div>
     </div>
